@@ -210,13 +210,13 @@
 </template>
 
 <script>
-
 import { serviceAddHttp, serviceDetail, serviceUpdateHttp } from '@/api/service'
 export default {
   name: 'ServiceCreateHttp',
-
   data() {
     return {
+      isEdit: false,
+      submitButDisabled: false,
       form: {
         service_name: '',
         service_desc: '',
@@ -240,6 +240,13 @@ export default {
         clientip_flow_limit: '',
         service_flow_limit: ''
       }
+    }
+  },
+  created() {
+    const id = this.$route.params && this.$route.params.id
+    if (id > 0) {
+      this.isEdit = true
+      this.fetchData(id)
     }
   },
   methods: {
@@ -328,12 +335,5 @@ export default {
 }
 .component-item {
   min-height: 100px;
-}
-
-.el-select .el-input {
-  width: 130px;
-}
-.input-with-select .el-input-group__prepend {
-  background-color: #fff;
 }
 </style>
