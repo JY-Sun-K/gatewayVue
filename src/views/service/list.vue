@@ -8,7 +8,6 @@
         class="filter-item"
         @keyup.enter.native="handleFilter"
       />
-
       <el-button
         v-waves
         class="filter-item"
@@ -25,11 +24,10 @@
           type="primary"
           icon="el-icon-edit"
         >
-          添加http服务
-
+          添加HTTP服务
         </el-button>
       </router-link>
-      <router-link :to="'/service/service_create_http/'">
+      <router-link :to="'/service/service_create_tcp/'">
         <el-button
           class="filter-item"
           style="margin-left: 10px;"
@@ -37,10 +35,9 @@
           icon="el-icon-edit"
         >
           添加TCP服务
-
         </el-button>
       </router-link>
-      <router-link :to="'/service/service_create_http/'">
+      <router-link :to="'/service/service_create_grpc/'">
         <el-button
           class="filter-item"
           style="margin-left: 10px;"
@@ -48,10 +45,8 @@
           icon="el-icon-edit"
         >
           添加GRPC服务
-
         </el-button>
       </router-link>
-
     </div>
 
     <el-table
@@ -73,10 +68,9 @@
           <span>{{ row.id }}</span>
         </template>
       </el-table-column>
-
       <el-table-column
         label="服务名称"
-        min-width="100px"
+        min-width="110px"
       >
         <template slot-scope="{row}">
           <span>{{ row.service_name }}</span>
@@ -84,7 +78,7 @@
       </el-table-column>
       <el-table-column
         label="服务描述"
-        min-width="130px"
+        min-width="120px"
       >
         <template slot-scope="{row}">
           <span>{{ row.service_desc }}</span>
@@ -95,12 +89,12 @@
         min-width="60px"
       >
         <template slot-scope="{row}">
-          <span>{{ row.load_type |loadTypeFilter }}</span>
+          <span>{{ row.load_type | loadTypeFilter }}</span>
         </template>
       </el-table-column>
       <el-table-column
         label="服务地址"
-        min-width="160px"
+        min-width="165px"
       >
         <template slot-scope="{row}">
           <span>{{ row.service_addr }}</span>
@@ -108,7 +102,7 @@
       </el-table-column>
       <el-table-column
         label="QPS"
-        min-width="80px"
+        min-width="50px"
       >
         <template slot-scope="{row}">
           <span>{{ row.qps }}</span>
@@ -116,7 +110,7 @@
       </el-table-column>
       <el-table-column
         label="日请求量"
-        min-width="80px"
+        min-width="70px"
       >
         <template slot-scope="{row}">
           <span>{{ row.qpd }}</span>
@@ -124,13 +118,12 @@
       </el-table-column>
       <el-table-column
         label="节点数"
-        min-width="80px"
+        min-width="60px"
       >
         <template slot-scope="{row}">
           <span>{{ row.total_node }}</span>
         </template>
       </el-table-column>
-
       <el-table-column
         label="操作"
         align="center"
@@ -193,28 +186,24 @@
     <pagination
       v-show="total>0"
       :total="total"
-      :page.sync="listQuery.page_no"
-      :limit.sync="listQuery.page_size"
+      :page.sync="listQuery.page"
+      :limit.sync="listQuery.limit"
       @pagination="getList"
     />
-
   </div>
 </template>
 
 <script>
 import { serviceList, serviceDelete } from '@/api/service'
 import waves from '@/directive/waves' // waves directive
-
 import Pagination from '@/components/Pagination' // secondary package based on el-pagination
 
 const loadTypeOptions = [
   { key: '0', display_name: 'HTTP' },
   { key: '1', display_name: 'TCP' },
   { key: '2', display_name: 'GRPC' }
-
 ]
 
-// arr to obj, such as { CN : "China", US : "USA" }
 const loadTypeKeyValue = loadTypeOptions.reduce((acc, cur) => {
   acc[cur.key] = cur.display_name
   return acc
@@ -238,15 +227,11 @@ export default {
       listQuery: {
         page_no: 1,
         page_size: 20,
-
-        ifno: ''
+        info: ''
       },
-
       temp: {
         id: undefined
-
       }
-
     }
   },
   created() {
@@ -258,20 +243,15 @@ export default {
       serviceList(this.listQuery).then(response => {
         this.list = response.data.list
         this.total = response.data.total
-
-        // Just to simulate the time of the request
-        setTimeout(() => {
-          this.listLoading = false
-        }, 1.5 * 1000)
+        this.listLoading = false
       })
     },
     handleFilter() {
       this.listQuery.page_no = 1
       this.getList()
     },
-
     handleDelete(row, index) {
-      this.$confirm('此操作将永久删除该记录, 是否继续?', '提示', {
+      this.$confirm('此操作将删除该记录, 是否继续?', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
@@ -296,15 +276,9 @@ export default {
           duration: 2000
         })
       })
-      // this.$notify({
-      //   title: 'Success',
-      //   message: 'Delete Successfully',
-      //   type: 'success',
-      //   duration: 2000
-      // })
-      // // this.list.splice(index, 1)
-    }
 
+      // this.list.splice(index, 1)
+    }
   }
 }
 </script>
